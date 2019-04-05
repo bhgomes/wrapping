@@ -1,0 +1,17 @@
+name: wrapping
+channels:
+  - conda-forge
+dependencies:
+  - ipython
+  - pytest
+  - pytest-cov
+  - codecov
+  - coverage
+  - coveralls
+  - pylint
+  - black
+  - dataclasses
+  - cython
+  - wrapt
+  - python-box
+  - pip
