@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# wrapping/decorators.py
 #
 #
 # MIT License
@@ -27,8 +27,20 @@
 #
 
 """
-Wrapping Version File.
+Wrapping Library: Decorators.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+from wrapt.decorators import adapter_factory, AdapterFactory, decorator, synchronized
+
+# -------------- Wrapping Library -------------- #
+
+__extensions__ = ()
+
+__all__ = (
+    "adapter_factory",
+    "AdapterFactory",
+    "decorator",
+    "synchronized",
+) + __extensions__

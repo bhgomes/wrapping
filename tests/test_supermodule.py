@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/test_supermodule.py
 #
 #
 # MIT License
@@ -27,8 +27,22 @@
 #
 
 """
-Wrapping Version File.
+Wrapping: Test that Wrapping is a Supermodule of Wrapt.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+import pytest
+import wrapt
+
+# -------------- Wrapping Library -------------- #
+
+import wrapping
+
+
+@pytest.mark.parametrize("name", wrapping.__all__)
+def test_supermodule(name):
+    try:
+        getattr(wrapt, name)
+    except AttributeError:
+        assert name in wrapping.__extensions__

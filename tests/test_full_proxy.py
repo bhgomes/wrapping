@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/test_full_proxy.py
 #
 #
 # MIT License
@@ -27,8 +27,13 @@
 #
 
 """
-Wrapping Version File.
+Wrapping: Full Proxy Test.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+import pytest
+
+# -------------- Wrapping Library -------------- #
+
+from wrapping import FullObjectProxy

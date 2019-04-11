@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/core.py
 #
 #
 # MIT License
@@ -27,8 +27,42 @@
 #
 
 """
-Wrapping Version File.
+Wrapping Test Suite.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+# -------------- Wrapping Library -------------- #
+
+
+def _f(*args, **kwargs):
+    return args, kwargs
+
+
+class _C:
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+
+PYTHON_OBJECTS = (
+    None,
+    True,
+    False,
+    0,
+    2,
+    3.14,
+    3 + 4j,
+    "a",
+    "abc",
+    [],
+    [[], 1, {"a": 23}],
+    (),
+    ((), (), ((), (), ())),
+    {},
+    set([]),
+    range(1, 10),
+    lambda x: x,
+    _f,
+    _C(),
+)

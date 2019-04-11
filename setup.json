@@ -12,8 +12,7 @@
     },
     "python_requires": ">=3.5.0",
     "install_requires": [
-        "wrapt",
-        "python-box"
+        "wrapt"
     ],
     "include_package_data": true,
     "license": "MIT",

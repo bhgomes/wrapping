@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/__init__.py
 #
 #
 # MIT License
@@ -27,8 +27,7 @@
 #
 
 """
-Wrapping Version File.
+Wrapping Test Suite.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- Wrapping Library -------------- #

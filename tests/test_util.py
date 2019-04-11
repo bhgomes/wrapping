@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/test_util.py
 #
 #
 # MIT License
@@ -27,8 +27,9 @@
 #
 
 """
-Wrapping Version File.
+Wrapping: Utility Test.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- Wrapping Library -------------- #
+
+from wrapping.util import *

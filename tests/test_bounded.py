@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# tests/test_bounded.py
 #
 #
 # MIT License
@@ -27,8 +27,19 @@
 #
 
 """
-Wrapping Version File.
+Wrapping: Bounded Test.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+import pytest
+
+# -------------- Wrapping Library -------------- #
+
+from wrapping import Bounded
+from .core import PYTHON_OBJECTS
+
+
+@pytest.mark.parametrize("obj", PYTHON_OBJECTS)
+def test_initialization(obj):
+    Bounded(obj)

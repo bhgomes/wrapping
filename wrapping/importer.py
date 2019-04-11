@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/_version.py
+# wrapping/importer.py
 #
 #
 # MIT License
@@ -27,8 +27,25 @@
 #
 
 """
-Wrapping Version File.
+Wrapping Library: Importer.
 """
 
-__version_info__ = (0, 0, 2)
-__version__ = ".".join(map(str, __version_info__))
+# -------------- External Library -------------- #
+
+from wrapt.importer import (
+    register_post_import_hook,
+    when_imported,
+    notify_module_loaded,
+    discover_post_import_hooks,
+)
+
+# -------------- Wrapping Library -------------- #
+
+__extensions__ = ()
+
+__all__ = (
+    "register_post_import_hook",
+    "when_imported",
+    "notify_module_loaded",
+    "discover_post_import_hooks",
+) + __extensions__
