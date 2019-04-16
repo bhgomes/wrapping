@@ -30,10 +30,10 @@
 Wrapping: Full Proxy Test.
 """
 
-# -------------- External Library -------------- #
+# ------------------------ External Library ------------------------ #
 
 import pytest
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
 
 from wrapping import FullObjectProxy

@@ -30,13 +30,11 @@
 Wrapping Library.
 """
 
-# -------------- Standard Library -------------- #
+# ------------------------ Standard Library ------------------------ #
 
-from inspect import getcallargs, getfullargspec, getargspec
+from inspect import getcallargs
 
-# -------------- External Library -------------- #
-
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
 
 from .decorators import *
 from .importer import *
@@ -47,7 +45,7 @@ from ._version import __version__, __version_info__
 
 
 __all__ = (
-    ("getcallargs", "getfullargspec", "getargspec")
+    ("getcallargs",)
     + box_extension.__all__
     + decorators.__all__
     + importer.__all__
@@ -55,8 +53,7 @@ __all__ = (
 )
 
 __extensions__ = (
-    ("getfullargspec", "getargspec")
-    + box_extension.__all__
+    box_extension.__all__
     + decorators.__extensions__
     + importer.__extensions__
     + wrappers.__extensions__

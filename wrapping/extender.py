@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# tests/test_supermodule.py
+# wrapping/extender.py
 #
 #
 # MIT License
@@ -27,22 +27,14 @@
 #
 
 """
-Wrapping: Test that Wrapping is a Supermodule of Wrapt.
+Wrapping Extender Library.
 """
 
-# -------------- External Library -------------- #
-
-import pytest
-import wrapt
-
-# -------------- Wrapping Library -------------- #
-
-import wrapping
+# ------------------------ Wrapping Library ------------------------ #
 
 
-@pytest.mark.parametrize("name", wrapping.__all__)
-def test_supermodule(name):
-    try:
-        getattr(wrapt, name)
-    except AttributeError:
-        assert name in wrapping.__extensions__
+__all__ = ("extend",)
+
+
+def extend(module):
+    """"""

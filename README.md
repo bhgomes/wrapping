@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/github/license/bhgomes/wrapping.svg?color=blue)](https://github.com/bhgomes/wrapping/blob/master/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-_A Python Wrapping Library_
+_An Extra Python Wrapping Library_
 
 </div>
 

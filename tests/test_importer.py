@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# wrapping/util.py
+# tests/test_importer.py
 #
 #
 # MIT License
@@ -26,33 +26,9 @@
 # SOFTWARE.
 #
 
-# -------------- Wrapping Library -------------- #
+"""
+Wrapping: Test Importers.
+"""
 
-try:
-    from boltons.functools import partial
-except ImportError:
-    from functools import partial
+# ------------------------ Wrapping Library ------------------------ #
 
-
-def identity(obj):
-    return obj
-
-
-def value_or(value, default):
-    return value if value is not None else default
-
-
-class classproperty(property):
-    """Class Property."""
-
-    def __get__(self, obj, objtype=None):
-        """Wrap Getter Function."""
-        return super().__get__(objtype)
-
-    def __set__(self, obj, value):
-        """Wrap Setter Function."""
-        return super().__set__(type(obj), value)
-
-    def __delete__(self, obj):
-        """Wrap Deleter Function."""
-        super().__delete__(type(obj))

@@ -30,7 +30,12 @@
 Wrapping Library: Importer.
 """
 
-# -------------- External Library -------------- #
+# ------------------------ Standard Library ------------------------ #
+
+from typing import Any, AnyStr, Union, Collection, Tuple, List, Callable
+from importlib import import_module
+
+# ------------------------ External Library ------------------------ #
 
 from wrapt.importer import (
     register_post_import_hook,
@@ -39,9 +44,9 @@ from wrapt.importer import (
     discover_post_import_hooks,
 )
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
 
-__extensions__ = ()
+__extensions__ = ("fallback_import", "try_import")
 
 __all__ = (
     "register_post_import_hook",
@@ -49,3 +54,101 @@ __all__ = (
     "notify_module_loaded",
     "discover_post_import_hooks",
 ) + __extensions__
+
+
+def fallback_import(name: AnyStr, package: AnyStr, fallback_package: AnyStr) -> Any:
+    """
+    Fallback importer.
+    :param name: Name of package.
+    :param package: Package Anchor.
+    :param fallback_package: Fallback Package Anchor.
+    :return: Imported Package.
+    """
+    try:
+        return import_module(name, package)
+    except ImportError:
+        return import_module(name, fallback_package)
+
+
+def _recurse_try_import(
+    names: Collection[AnyStr],
+    package: AnyStr = None,
+    *exceptions: Exception,
+    log_error: Callable[[Any], None] = lambda s: None,
+    log_success: Callable[[Any], None] = lambda s: None,
+    default: Any = None
+) -> Tuple[List[Any], List[bool]]:
+    """
+    Recurse Try-Import Mechanism.
+    :param names: Names to import
+    :param package: Anchor Package
+    :param exceptions: Exceptions to catch during import
+    :param log_error: Log function for errors
+    :param log_success: Log function for successes
+    :param default: Default value for missing names
+    :return: Pair of resulting objects and success/failure flags
+    """
+    return tuple(
+        zip(
+            *[
+                try_import(
+                    name,
+                    package=package,
+                    *exceptions,
+                    log_error=log_error,
+                    log_success=log_success,
+                    default=default
+                )
+                for name in names
+            ]
+        )
+    )
+
+
+def try_import(
+    names: Union[AnyStr, Collection],
+    package: AnyStr = None,
+    *exceptions: Exception,
+    log_error: Callable[[Any], None] = lambda s: None,
+    log_success: Callable[[Any], None] = lambda s: None,
+    default: Any = None
+) -> Union[Tuple[Any, bool], Tuple[List[Any], List[bool]]]:
+    """
+    Attempt Package Import With Automatic Exception Handling.
+    :param names: Names to import. Input as one string or a list of strings.
+    :param package: Anchor Package for relative imports.
+    :param exceptions: Exception types to catch on import.
+    :param log_error: Log function for logging errors.
+    :param log_success: Log function for logging successes.
+    :param default: Default value for missing names.
+    :return: Pair of result and success/failure flag
+    """
+    if not exceptions:
+        exceptions = (ImportError, ModuleNotFoundError)
+    if isinstance(names, Collection):
+        return _recurse_try_import(
+            names,
+            package,
+            *exceptions,
+            log_error=log_error,
+            log_success=log_success,
+            default=default
+        )
+    elif names.startswith(".") and package is None:
+        raise TypeError("Relative Packages must be imported with an anchor package.")
+    try:
+        module = import_module(names, package=package)
+        log_success(module)
+        return module, True
+    except exceptions as error:
+        try:
+            module = import_module(package)
+            resource = getattr(module, names)
+            log_success(resource)
+            return resource, True
+        except exceptions as import_error:
+            log_error(import_error)
+        except AttributeError as attribute_error:
+            log_error(attribute_error)
+        log_error(error)
+    return default, False

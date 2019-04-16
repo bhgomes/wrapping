@@ -30,39 +30,26 @@
 Wrapping Test Suite.
 """
 
-# -------------- External Library -------------- #
+# ------------------------ External Library ------------------------ #
 
-# -------------- Wrapping Library -------------- #
+from hypothesis import strategies as st
 
+# ------------------------ Wrapping Library ------------------------ #
 
-def _f(*args, **kwargs):
-    return args, kwargs
-
-
-class _C:
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
-
-
-PYTHON_OBJECTS = (
-    None,
-    True,
-    False,
-    0,
-    2,
-    3.14,
-    3 + 4j,
-    "a",
-    "abc",
-    [],
-    [[], 1, {"a": 23}],
-    (),
-    ((), (), ((), (), ())),
-    {},
-    set([]),
-    range(1, 10),
-    lambda x: x,
-    _f,
-    _C(),
+anything = st.one_of(
+    st.none(),
+    st.integers(),
+    st.floats(),
+    st.booleans(),
+    st.complex_numbers(),
+    st.characters(),
+    st.binary(),
+    st.decimals(),
+    st.dictionaries(st.text(), st.integers()),
+    st.emails(),
+    st.fractions(),
+    st.text(),
+    st.sets(st.integers() | st.floats()),
+    st.lists(st.integers() | st.floats()),
+    st.lists(st.integers() | st.floats()).map(tuple),
 )

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- #
 #
-# tests/test_util.py
+# tests/test_module.py
 #
 #
 # MIT License
@@ -27,9 +27,30 @@
 #
 
 """
-Wrapping: Utility Test.
+Wrapping: Test that Wrapping is a Supermodule of Wrapt.
 """
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ External Library ------------------------ #
 
-from wrapping.util import *
+import pytest
+import wrapt
+
+# ------------------------ Wrapping Library ------------------------ #
+
+import wrapping
+
+
+def test_import():
+    import wrapping._version
+    import wrapping.box_extension
+    import wrapping.decorators
+    import wrapping.importer
+    import wrapping.wrappers
+
+
+@pytest.mark.parametrize("name", wrapping.__all__)
+def test_supermodule(name):
+    try:
+        getattr(wrapt, name)
+    except AttributeError:
+        assert name in wrapping.__extensions__

@@ -30,13 +30,13 @@
 Wrapping Library: Decorators.
 """
 
-# -------------- External Library -------------- #
+# ------------------------ External Library ------------------------ #
 
 from wrapt.decorators import adapter_factory, AdapterFactory, decorator, synchronized
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
 
-__extensions__ = ()
+__extensions__ = ("classproperty",)
 
 __all__ = (
     "adapter_factory",
@@ -44,3 +44,19 @@ __all__ = (
     "decorator",
     "synchronized",
 ) + __extensions__
+
+
+class classproperty(property):
+    """Class Property."""
+
+    def __get__(self, obj, objtype=None):
+        """Wrap Getter Function."""
+        return super().__get__(objtype)
+
+    def __set__(self, obj, value):
+        """Wrap Setter Function."""
+        return super().__set__(type(obj), value)
+
+    def __delete__(self, obj):
+        """Wrap Deleter Function."""
+        super().__delete__(type(obj))

@@ -26,20 +26,78 @@
 # SOFTWARE.
 #
 
-# -------------- External Library -------------- #
+"""
+Wrapping Library: Box Extension.
+"""
+
+# ------------------------ Standard Library ------------------------ #
+
+from collections import Mapping
+
+# ------------------------ External Library ------------------------ #
 
 import wrapt
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
+
+from .wrappers import value_or
+
+
+__extensions__ = ("Box", "FrozenBox", "subset_box")
 
 
 try:
     import box
 
-    __all__ = ("BoxObject",)
+    __extensions__ += ("BoxObject",)
+    __all__ = __extensions__
+    _Box = box.Box
 except ImportError:
     box = None
+    _Box = object
     __all__ = ()
+
+
+class Box(_Box):
+    """
+    Box Extension Object.
+
+    """
+
+    defaults = {}
+    frozen_defaults = False
+
+    def __init_subclass__(cls, defaults=None, frozen_defaults=False, **kwargs):
+        """
+        :param defaults:
+        :param frozen_defaults:
+        :param kwargs:
+        :return:
+        """
+        super().__init_subclass__(**kwargs)
+        cls.defaults = value_or(defaults, {})
+        cls.frozen_defaults = frozen_defaults
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize Box with custom Defaults
+        :param args:
+        :param kwargs:
+        """
+        defaults = type(self).defaults
+        if type(self).frozen_defaults:
+            for k, v in self.defaults.items():
+                if k in kwargs:
+                    if v != kwargs[k]:
+                        raise TypeError(
+                            "Box default {key}={value} is permanent.".format(
+                                key=k, value=v
+                            )
+                        )
+                    kwargs.pop(k)
+        else:
+            defaults.update(**kwargs)
+        super().__init__(*args, **defaults)
 
 
 class _BoxObject(wrapt.ObjectProxy):
@@ -60,10 +118,10 @@ class _BoxObject(wrapt.ObjectProxy):
 
     def __init__(self, wrapped=None, *args, **kwargs):
         """Initialize Box Object with __dict__ as a Box."""
-        super(_BoxObject, self).__init__(wrapped)
-        box_class = kwargs.pop("box_class", box.Box)
+        super().__init__(wrapped)
+        box_class = kwargs.pop("box_class", Box)
         try:
-            base_dict = super(_BoxObject, self).__getattr__("__dict__")
+            base_dict = super().__getattr__("__dict__")
             if args:
                 raise TypeError(
                     "Cannot pass dictionary arguments when "
@@ -73,16 +131,25 @@ class _BoxObject(wrapt.ObjectProxy):
             internal_box = box_class(base_dict, **kwargs)
         except AttributeError:
             internal_box = box_class(*args, **kwargs)
-        super(_BoxObject, self).__setattr__("__dict__", internal_box)
+        super().__setattr__("__dict__", internal_box)
 
     def __call__(self, *args, **kwargs):
-        """Call Method for Callable Objects."""
+        """
+        Call Method for Callable Objects.
+        :param args:
+        :param kwargs:
+        :return:
+        """
         return self.__wrapped__(*args, **kwargs)
 
     def __getattr__(self, name):
-        """Get Attribute from Wrapped Object or from Box."""
+        """
+        Get Attribute from Wrapped Object or from Box.
+        :param name:
+        :return:
+        """
         try:
-            return super(BoxObject, self).__getattr__(name)
+            return super().__getattr__(name)
         except AttributeError as error:
             try:
                 return self.__dict__[name]
@@ -90,7 +157,12 @@ class _BoxObject(wrapt.ObjectProxy):
                 raise error
 
     def __setattr__(self, name, value):
-        """Set Attribute in Wrapped Object or Box."""
+        """
+        Set Attribute in Wrapped Object or Box.
+        :param name:
+        :param value:
+        :return:
+        """
         if name == "__dict__":
             raise TypeError("cannot set __dict__")
         elif hasattr(self.__wrapped__, name):
@@ -99,11 +171,13 @@ class _BoxObject(wrapt.ObjectProxy):
             self.__dict__[name] = value
 
     def __delattr__(self, name):
-        """Delete Attribute in Wrapped Object or Box."""
+        """
+        Delete Attribute in Wrapped Object or Box.
+        :param name:
+        :return:
+        """
         if name == "__dict__":
-            super(BoxObject, self).__setattr__(
-                "__dict__", getattr(self.__wrapped__, "__dict__", {})
-            )
+            super().__setattr__("__dict__", getattr(self.__wrapped__, "__dict__", {}))
         else:
             try:
                 delattr(self.__wrapped__, name)
@@ -112,6 +186,33 @@ class _BoxObject(wrapt.ObjectProxy):
                     del self.__dict__[name]
                 except KeyError:
                     raise error
+
+
+class FrozenBox(
+    Box,
+    defaults={"frozen_box": True, "default_box": True, "default_box_attr": None},
+    frozen_defaults=True,
+):
+    """
+    FrozenBox.
+
+    """
+
+
+def subset_box(total, key=lambda x: x, *, name_for_original=None, box_class=Box):
+    """
+    Get subset of mapping type as a Box or BoxObject.
+    :param total:
+    :param key:
+    :param name_for_original:
+    :param box_class:
+    :return:
+    """
+    subset = key(total)
+    kwargs = box_class({name_for_original: total}) if name_for_original else box_class()
+    if isinstance(subset, Mapping):
+        return box_class(subset, **kwargs)
+    return BoxObject(subset, box_class=box_class, **kwargs)
 
 
 if box is None:

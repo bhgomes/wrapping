@@ -27,14 +27,17 @@
 #
 
 """
-Wrapping: Bounded Test.
+Wrapping: Box Extension Tests.
 """
 
-# -------------- External Library -------------- #
+# ------------------------ External Library ------------------------ #
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+from hypothesis.stateful import RuleBasedStateMachine, rule, invariant
 
-# -------------- Wrapping Library -------------- #
+# ------------------------ Wrapping Library ------------------------ #
 
 from wrapping.box_extension import BoxObject
 
