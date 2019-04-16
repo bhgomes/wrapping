@@ -32,7 +32,7 @@ Wrapping Library: Box Extension.
 
 # ------------------------ Standard Library ------------------------ #
 
-from collections import Mapping
+from collections.abc import Mapping
 
 # ------------------------ External Library ------------------------ #
 

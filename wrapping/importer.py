@@ -32,7 +32,7 @@ Wrapping Library: Importer.
 
 # ------------------------ Standard Library ------------------------ #
 
-from typing import Any, AnyStr, Union, Collection, Tuple, List, Callable
+from typing import Any, AnyStr, Union, Sequence, Tuple, List, Callable, Iterable
 from importlib import import_module
 
 # ------------------------ External Library ------------------------ #
@@ -71,12 +71,12 @@ def fallback_import(name: AnyStr, package: AnyStr, fallback_package: AnyStr) -> 
 
 
 def _recurse_try_import(
-    names: Collection[AnyStr],
-    package: AnyStr = None,
-    *exceptions: Exception,
-    log_error: Callable[[Any], None] = lambda s: None,
-    log_success: Callable[[Any], None] = lambda s: None,
-    default: Any = None
+    names: Sequence[AnyStr],
+    package: AnyStr,
+    exceptions: Iterable[Exception],
+    log_error: Callable[[Any], None],
+    log_success: Callable[[Any], None],
+    default: Any,
 ) -> Tuple[List[Any], List[bool]]:
     """
     Recurse Try-Import Mechanism.
@@ -93,7 +93,7 @@ def _recurse_try_import(
             *[
                 try_import(
                     name,
-                    package=package,
+                    package,
                     *exceptions,
                     log_error=log_error,
                     log_success=log_success,
@@ -106,7 +106,7 @@ def _recurse_try_import(
 
 
 def try_import(
-    names: Union[AnyStr, Collection],
+    names: Union[AnyStr, Sequence[AnyStr]],
     package: AnyStr = None,
     *exceptions: Exception,
     log_error: Callable[[Any], None] = lambda s: None,
@@ -125,14 +125,9 @@ def try_import(
     """
     if not exceptions:
         exceptions = (ImportError, ModuleNotFoundError)
-    if isinstance(names, Collection):
+    if not isinstance(names, str) and isinstance(names, Sequence):
         return _recurse_try_import(
-            names,
-            package,
-            *exceptions,
-            log_error=log_error,
-            log_success=log_success,
-            default=default
+            names, package, exceptions, log_error, log_success, default
         )
     elif names.startswith(".") and package is None:
         raise TypeError("Relative Packages must be imported with an anchor package.")
