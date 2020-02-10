@@ -78,8 +78,7 @@ def _recurse_try_import(
     log_success: Callable[[Any], None],
     default: Any,
 ) -> Tuple[List[Any], List[bool]]:
-    """
-    Recurse Try-Import Mechanism.
+    """Recurse Try-Import Mechanism.
     :param names: Names to import
     :param package: Anchor Package
     :param exceptions: Exceptions to catch during import
@@ -113,8 +112,7 @@ def try_import(
     log_success: Callable[[Any], None] = lambda s: None,
     default: Any = None
 ) -> Union[Tuple[Any, bool], Tuple[List[Any], List[bool]]]:
-    """
-    Attempt Package Import With Automatic Exception Handling.
+    """Attempt Package Import With Automatic Exception Handling.
     :param names: Names to import. Input as one string or a list of strings.
     :param package: Anchor Package for relative imports.
     :param exceptions: Exception types to catch on import.

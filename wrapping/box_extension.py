@@ -79,8 +79,7 @@ class Box(_Box):
         cls.frozen_defaults = frozen_defaults
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialize Box with custom Defaults
+        """Initialize Box with custom Defaults
         :param args:
         :param kwargs:
         """
@@ -103,13 +102,11 @@ class Box(_Box):
 class _BoxObject(wrapt.ObjectProxy):
     """
     Wrapper for any Python object with a Box as __dict__.
-
     Simple Usage:
     import requests
     url = 'https://raw.githubusercontent.com/cdgriffith/Box/master/box.py'
     session = BoxObject(requests.Session())
     session.source_code = session.get(url).text
-
     :param wrapped: Wrapped Object.
     :param box_class: Custom internal Box class
     :param args: Arguments to fill Box
@@ -134,8 +131,7 @@ class _BoxObject(wrapt.ObjectProxy):
         super().__setattr__("__dict__", internal_box)
 
     def __call__(self, *args, **kwargs):
-        """
-        Call Method for Callable Objects.
+        """Call Method for Callable Objects.
         :param args:
         :param kwargs:
         :return:
@@ -143,8 +139,7 @@ class _BoxObject(wrapt.ObjectProxy):
         return self.__wrapped__(*args, **kwargs)
 
     def __getattr__(self, name):
-        """
-        Get Attribute from Wrapped Object or from Box.
+        """Get Attribute from Wrapped Object or from Box.
         :param name:
         :return:
         """
@@ -157,8 +152,7 @@ class _BoxObject(wrapt.ObjectProxy):
                 raise error
 
     def __setattr__(self, name, value):
-        """
-        Set Attribute in Wrapped Object or Box.
+        """Set Attribute in Wrapped Object or Box.
         :param name:
         :param value:
         :return:
@@ -171,13 +165,14 @@ class _BoxObject(wrapt.ObjectProxy):
             self.__dict__[name] = value
 
     def __delattr__(self, name):
-        """
-        Delete Attribute in Wrapped Object or Box.
+        """Delete Attribute in Wrapped Object or Box.
         :param name:
         :return:
         """
         if name == "__dict__":
-            super().__setattr__("__dict__", getattr(self.__wrapped__, "__dict__", {}))
+            super().__setattr__(
+                "__dict__", getattr(self.__wrapped__, "__dict__", { })
+            )
         else:
             try:
                 delattr(self.__wrapped__, name)
